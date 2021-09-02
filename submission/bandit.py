@@ -65,6 +65,7 @@ def epsG(arms, epsilon, T):
             ind = np.random.choice(N)
         else:
             ind = np.argmax(empirical_means)
+
         arm_pull = arms[ind].pull()
         reward += arm_pull
         arm_successes[ind] += arm_pull
@@ -156,7 +157,28 @@ def kl_UCB(arms, T):
     return regret, 0
 
 
+def thompsonSampling(arms, T):
+    N = len(arms)
+    arm_successes = np.zeros(N)
+    arm_pulls = np.zeros(N)
+    empirical_means = np.zeros(N)
+    reward = 0
+
+    for i in range(T):
+        ind = np.argmax([np.random.beta(s+1, t-s+1)
+                        for s, t in zip(arm_successes, arm_pulls)])
+        arm_pull = arms[ind].pull()
+        reward += arm_pull
+        arm_successes[ind] = arm_pull
+        arm_pulls[ind] += 1
+        empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
+
+    ind_max = np.argmax([arm.p for arm in arms])
+    regret = arms[ind_max].p * T - reward
+    return regret, 0
 # class of bandit, with several methods
+
+
 class Bandit:
     # arms = []
 
@@ -175,6 +197,9 @@ class Bandit:
 
         elif algorithm == 'kl-ucb-t1':
             reg, highs = kl_UCB(self.arms, horizon)
+
+        elif algorithm == 'thompson-sampling-t1':
+            reg, highs = thompsonSampling(self.arms, horizon)
 
         print(out + "{}, {}\n".format(reg, highs))
 
