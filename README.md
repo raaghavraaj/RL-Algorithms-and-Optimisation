@@ -14,5 +14,5 @@ All of the classes, algorithms and useful functions are implemented in the file 
 * ```--randomSeed```: a non-negative integer to make the process deterministic
 * ```epsilon```: a non-negative real number in \[0, 1\]; relevant to the Epsilon Greedy methods
 * ```--scale```: a positive real number, denoting the confidence value in the UCB algorithm, _c_
-* ```--threshold```: a real number in \[0,1\]; relevant to the Task 4
+* ```--threshold```: a real number in \[0, 1\]; relevant to the Task 4
 * ```--horizon```: the number of pulls
