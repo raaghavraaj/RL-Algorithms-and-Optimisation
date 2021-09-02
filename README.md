@@ -1,6 +1,9 @@
 # RL-Algorithms-and-Optimisation
 The repository contains the beginner Reinforcement Learning algorithms dealing with the Exploration vs Exploitation dilemma, which are:
-1. Epsilon-Greedy Algorithm
-2. UCB Algorithm
-3. KL-UCB Algorithm
-4. THompson Sampling Algorithm
+* Epsilon-Greedy Algorithm
+* UCB Algorithm
+* KL-UCB Algorithm
+* Thompson Sampling Algorithm
+
+# Running and executing the algorithms
+All of the classes, algorithms and useful functions are implemented in the file ```submission/bandit.py```.
