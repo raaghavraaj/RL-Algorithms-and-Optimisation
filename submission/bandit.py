@@ -203,8 +203,10 @@ class Bandit:
 
         elif algorithm == 'ucb-t2':
             reg, highs = UCB(self.arms, horizon, c)
+
         print(out + "{}, {}\n".format(reg, highs))
 
 
-test = Bandit(instance)
-test.runAlgo(algo)
+if __name__ == "__main__":
+    bandit = Bandit(instance)
+    bandit.runAlgo(algo)
