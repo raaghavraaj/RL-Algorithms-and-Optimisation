@@ -1,0 +1,2 @@
+Task 2:
+    https://towardsdatascience.com/the-upper-confidence-bound-ucb-bandit-algorithm-c05c2bf4c13f

@@ -201,6 +201,8 @@ class Bandit:
         elif algorithm == 'thompson-sampling-t1':
             reg, highs = thompsonSampling(self.arms, horizon)
 
+        elif algorithm == 'ucb-t2':
+            reg, highs = UCB(self.arms, horizon, c)
         print(out + "{}, {}\n".format(reg, highs))
 
 
