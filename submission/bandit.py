@@ -179,7 +179,7 @@ def thompsonSampling(arms, T):
 # class of bandit, with several methods
 
 
-class Bandit:
+class BernoulliBandit:
     # arms = []
 
     def __init__(self, instance):
@@ -204,9 +204,9 @@ class Bandit:
         elif algorithm == 'ucb-t2':
             reg, highs = UCB(self.arms, horizon, c)
 
-        print(out + "{}, {}\n".format(reg, highs))
+        print(out + "{}, {}".format(reg, highs))
 
 
 if __name__ == "__main__":
-    bandit = Bandit(instance)
+    bandit = BernoulliBandit(instance)
     bandit.runAlgo(algo)
