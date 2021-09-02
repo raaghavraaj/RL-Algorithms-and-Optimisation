@@ -61,7 +61,7 @@ def epsG(arms, epsilon, T):
         ind = 0
 
         if toss < epsilon:
-            ind = random.randint(0, N - 1)
+            ind = np.random.choice(N)
         else:
             ind = np.argmax(empirical_means)
 
