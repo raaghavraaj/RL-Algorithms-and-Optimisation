@@ -38,18 +38,23 @@ np.random.seed(seed)
 # Class arm
 class arm:
 
-    def __init__(self, mean):
-        self.p = mean
+    def __init__(self, support, probs):
+        self.outcomes = support
+        self.p = probs
 
     def pull(self):
-        pl = np.random.uniform(0, 1)
-        if pl < self.p:
-            return 0
-        else:
-            return 1
-
+        cumProb = [self.p[0]]
+        for i in range(1, len(self.p)):
+            cumProb.append(cumProb[i-1] + self.p[i])
+        toss = np.random.uniform(0, 1)
+        for i in range(len(cumProb) - 1):
+            if toss > cumProb[i] and toss <= cumProb[i+1]:
+                return self.outcomes[i+1]
+        return self.outcomes[0]
 
 # methods
+
+
 def epsG(arms, epsilon, T):
     N = len(arms)
     arm_successes = np.zeros(N)
@@ -72,8 +77,8 @@ def epsG(arms, epsilon, T):
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    ind_max = np.argmax([arm.p for arm in arms])
-    regret = arms[ind_max].p * T - reward
+    ind_max = np.argmax([arm.p[1] for arm in arms])
+    regret = arms[ind_max].p[1] * T - reward
     return regret, 0
 
 
@@ -101,8 +106,8 @@ def UCB(arms, T, scale):
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    ind_max = np.argmax([arm.p for arm in arms])
-    regret = arms[ind_max].p * T - reward
+    ind_max = np.argmax([arm.p[1] for arm in arms])
+    regret = arms[ind_max].p[1] * T - reward
     return regret, 0
 
 
@@ -152,8 +157,8 @@ def kl_UCB(arms, T):
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    ind_max = np.argmax([arm.p for arm in arms])
-    regret = arms[ind_max].p * T - reward
+    ind_max = np.argmax([arm.p[1] for arm in arms])
+    regret = arms[ind_max].p[1] * T - reward
     return regret, 0
 
 
@@ -173,18 +178,25 @@ def thompsonSampling(arms, T):
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    ind_max = np.argmax([arm.p for arm in arms])
-    regret = arms[ind_max].p * T - reward
+    ind_max = np.argmax([arm.p[1] for arm in arms])
+    regret = arms[ind_max].p[1] * T - reward
     return regret, 0
+
+
 # class of bandit, with several methods
-
-
 class BernoulliBandit:
     # arms = []
-
     def __init__(self, instance):
-        with open(instance) as f:
-            self.arms = [arm(float(i)) for i in f.read().splitlines()]
+        if instance[27] in ['1', '2']:
+            with open(instance) as f:
+                self.arms = [arm([0, 1], [1-float(i), float(i)])
+                             for i in f.read().splitlines()]
+        else:
+            with open(instance) as f:
+                input = [[float(i) for i in l.split()]
+                         for l in f.read().splitlines()]
+                n = len(input)
+                self.arms = [arm(input[0], i) for i in input[1:n]]
 
     def runAlgo(self, algorithm):
 
