@@ -167,11 +167,47 @@ def thompsonSampling(arms, T):
 
 
 def algoTask3(arms, T):
+    support = arms[0].outcomes
+    N = len(arms)
+    arm_pulls = np.zeros(N)
+    arm_successes = np.zeros((N, len(support)))
+    expirical_expectations = np.zeros(N)
+    reward = 0
+
+    for i in range(N):
+        pull_reward = arms[i].pull()
+        reward += pull_reward
+        arm_pulls[i] += 1
+        for j in range(len(support)):
+            if support[j] == pull_reward:
+                arm_successes[i][j] += 1
+                break
+        expirical_expectations[i] = sum(np.multiply(
+            support, arm_successes[i])) / arm_pulls[i]
+
+    for i in range(N, T):
+        ind = np.argmax([(p + np.sqrt(0.255 * np.log(i)/n))
+                        for p, n in zip(expirical_expectations, arm_pulls)])
+        pull_reward = arms[ind].pull()
+        reward += pull_reward
+        arm_pulls[ind] += 1
+        for j in range(len(support)):
+            if support[j] == pull_reward:
+                arm_successes[ind][j] += 1
+                break
+        expirical_expectations[ind] = sum(np.multiply(
+            support, arm_successes[ind])) / arm_pulls[ind]
+
+    regret = np.max([sum([r*p for r, p in zip(arm.outcomes, arm.p)])
+                    for arm in arms]) * T - reward
+    return regret, 0
+
+
+def algoTask4(arms, threshold, T):
     pass
 
+
 # class of bandit, with several methods
-
-
 class BernoulliBandit:
     # arms = []
     def __init__(self, instance):
@@ -206,6 +242,9 @@ class BernoulliBandit:
         elif algorithm == 'alg-t3':
             reg, highs = algoTask3(self.arms, T)
 
+        elif algorithm == 'alg-t4':
+            reg, highs = algoTask4(self.arms, threshold, T)
+
         print(self.instance, algorithm, seed, eps,
               scale, threshold, T, reg, highs, sep=', ', flush=True)
         return reg, highs
@@ -225,4 +264,4 @@ if __name__ == "__main__":
 
     # driver instructions
     bandit = BernoulliBandit(instance)
-    bandit.runAlgo(algo, seed, eps, c, th, horizon)
+    _, _ = bandit.runAlgo(algo, seed, eps, c, th, horizon)
