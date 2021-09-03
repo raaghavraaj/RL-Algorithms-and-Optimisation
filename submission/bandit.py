@@ -1,4 +1,3 @@
-import os
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,23 +16,6 @@ parser.add_argument(
 parser.add_argument(
     "--horizon", help="a non-negative integer denoting the number of trials/attempts")
 
-# parsing the command line arguments
-args = parser.parse_args()
-
-instance = args.instance
-algo = args.algorithm
-seed = int(args.randomSeed)
-eps = float(args.epsilon)
-c = float(args.scale)
-th = float(args.threshold)
-horizon = int(args.horizon)
-
-out = "{}, {}, {}, {}, {}, {}, {}, ".format(
-    instance, algo, seed, eps, c, th, horizon)
-
-# Seeding
-np.random.seed(seed)
-
 
 # Class arm
 class arm:
@@ -46,15 +28,15 @@ class arm:
         cumProb = [self.p[0]]
         for i in range(1, len(self.p)):
             cumProb.append(cumProb[i-1] + self.p[i])
+
         toss = np.random.uniform(0, 1)
         for i in range(len(cumProb) - 1):
             if toss > cumProb[i] and toss <= cumProb[i+1]:
                 return self.outcomes[i+1]
         return self.outcomes[0]
 
+
 # methods
-
-
 def epsG(arms, epsilon, T):
     N = len(arms)
     arm_successes = np.zeros(N)
@@ -82,7 +64,7 @@ def epsG(arms, epsilon, T):
     return regret, 0
 
 
-def UCB(arms, T, scale):
+def UCB(arms, scale, T):
     N = len(arms)
     arm_successes = np.zeros(N)
     arm_pulls = np.zeros(N)
@@ -112,9 +94,10 @@ def UCB(arms, T, scale):
 
 
 def klBern(x, y):
+    lim = 1e-15
     # function to calculate the kl-divergence between two samples
-    x = min(max(x, eps), 1 - eps)
-    y = min(max(y, eps), 1 - eps)
+    x = min(max(x, lim), 1 - lim)
+    y = min(max(y, lim), 1 - lim)
     return x * np.log(x / y) + (1 - x) * np.log((1 - x) / (1 - y))
 
 
@@ -183,10 +166,16 @@ def thompsonSampling(arms, T):
     return regret, 0
 
 
+def algoTask3(arms, T):
+    pass
+
 # class of bandit, with several methods
+
+
 class BernoulliBandit:
     # arms = []
     def __init__(self, instance):
+        self.instance = instance
         if instance[27] in ['1', '2']:
             with open(instance) as f:
                 self.arms = [arm([0, 1], [1-float(i), float(i)])
@@ -198,27 +187,42 @@ class BernoulliBandit:
                 n = len(input)
                 self.arms = [arm(input[0], i) for i in input[1:n]]
 
-    def runAlgo(self, algorithm):
+    def runAlgo(self, algorithm, seed, eps, scale, threshold, T):
 
+        np.random.seed(seed)
         # prints the cmd line arguments, and the REGRET and HIGH
         if algorithm == 'epsilon-greedy-t1':
-            reg, highs = epsG(self.arms, eps, horizon)
+            reg, highs = epsG(self.arms, eps, T)
 
-        elif algorithm == 'ucb-t1':
-            reg, highs = UCB(self.arms, horizon, c)
+        elif algorithm in ['ucb-t1', 'ucb-t2']:
+            reg, highs = UCB(self.arms, scale, T)
 
         elif algorithm == 'kl-ucb-t1':
-            reg, highs = kl_UCB(self.arms, horizon)
+            reg, highs = kl_UCB(self.arms, T)
 
         elif algorithm == 'thompson-sampling-t1':
-            reg, highs = thompsonSampling(self.arms, horizon)
+            reg, highs = thompsonSampling(self.arms, T)
 
-        elif algorithm == 'ucb-t2':
-            reg, highs = UCB(self.arms, horizon, c)
+        elif algorithm == 'alg-t3':
+            reg, highs = algoTask3(self.arms, T)
 
-        print(out + "{}, {}".format(reg, highs))
+        print(self.instance, algorithm, seed, eps,
+              scale, threshold, T, reg, highs, sep=', ', flush=True)
+        return reg, highs
 
 
 if __name__ == "__main__":
+    # parsing the command line arguments
+    args = parser.parse_args()
+
+    instance = args.instance
+    algo = args.algorithm
+    seed = int(args.randomSeed)
+    eps = float(args.epsilon)
+    c = float(args.scale)
+    th = float(args.threshold)
+    horizon = int(args.horizon)
+
+    # driver instructions
     bandit = BernoulliBandit(instance)
-    bandit.runAlgo(algo)
+    bandit.runAlgo(algo, seed, eps, c, th, horizon)
