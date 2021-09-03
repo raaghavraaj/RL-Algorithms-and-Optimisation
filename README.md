@@ -16,3 +16,11 @@ All of the classes, algorithms and useful functions are implemented in the file 
 * ```--scale```: a positive real number, denoting the confidence value in the UCB algorithm, _c_
 * ```--threshold```: a real number in \[0, 1\]; relevant to the Task 4
 * ```--horizon```: the number of pulls
+
+The script can be run using the following command using the appropriate and customised parameters for the conditional arguments:
+
+```
+~RL-Algorithms-and-Optimisation $ python3 bandit.py --instance {path} --algorithm {algo} --randomSeed {seed} --epsilon {eps} --scale {c} --threshold {th} --horizon {hz}
+```
+
+The ```submissions``` directory contains a script ```runner.py``` to run all the tasks and generate plots. Run the script and pipe the output to a file (there will be 9000+ lines printed). The complete task would take almost 2-3 hours to run.
