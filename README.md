@@ -26,6 +26,6 @@ For example
 ```
 ~RL-Algorithms-and-Optimisation $ python3 bandit.py --instance ../instances/instances-task1/i-2.txt --algorithm ucb-t1 --randomSeed 499 --epsilon 0.02 --scale 2 --threshold 0 --horizon 27
 
-OUT >> ../instances/instances-task1/i-2.txt, ucb-t1, 499, 0.02, 2.0, 0.0, 27, 6.5, 0
+../instances/instances-task1/i-2.txt, ucb-t1, 499, 0.02, 2.0, 0.0, 27, 6.5, 0
 ```
 The ```submissions``` directory contains a script ```runner.py``` to run all the tasks and generate plots. Run the script and pipe the output to a file (there will be 9000+ lines printed). The complete task would take almost 2-3 hours to run.
