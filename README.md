@@ -28,4 +28,4 @@ For example
 
 ../instances/instances-task1/i-2.txt, ucb-t1, 499, 0.02, 2.0, 0.0, 27, 6.5, 0
 ```
-The ```submissions``` directory contains a script ```runner.py``` to run all the tasks and generate plots. Run the script and pipe the output to a file (there will be 9000+ lines printed). The complete task would take almost 2-3 hours to run.
+The ```submissions``` directory contains a script ```runner.py``` to run all the tasks and generate plots. Run the script and pipe the output to a file (there will be 9000+ lines printed). The complete program, all 4 tasks, would take almost 2-3 hours to run.
