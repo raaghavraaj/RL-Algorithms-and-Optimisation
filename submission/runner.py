@@ -1,4 +1,5 @@
 from bandit import BernoulliBandit
+import matplotlib.pyplot as plt
 
 algos = ['epsilon-greedy-t1', 'ucb-t1', 'kl-ucb-t1',
          'thompson-sampling-t1', 'ucb-t2', 'alg-t3', 'alg-t4']
@@ -14,7 +15,6 @@ for i in range(1, 4):
             for seed in range(50):
                 regret, high = banditSample.runAlgo(
                     algo, seed, 0.02, 2, 0, horizon)
-
 
 # Task 2:
 for i in range(1, 6):
@@ -32,7 +32,7 @@ for i in range(1, 3):
     for horizon in horizons:
         for seed in range(50):
             regret, high = banditSample.runAlgo(
-                'alg-t3', seed, 0.02, 2, 0, horizon)
+                'alg-t3', seed, 0.02, 0.225, 0, horizon)
 
 # Task 4:
 for i in range(1, 3):
@@ -41,4 +41,4 @@ for i in range(1, 3):
         for horizon in horizons:
             for seed in range(50):
                 regret, high = banditSample.runAlgo(
-                    'alg-t3', seed, 0.02, 2, threshold, horizon)
+                    'alg-t4', seed, 0.02, 2, threshold, horizon)

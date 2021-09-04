@@ -19,7 +19,6 @@ parser.add_argument(
 
 # Class arm
 class arm:
-
     def __init__(self, support, probs):
         self.outcomes = support
         self.p = probs
@@ -47,7 +46,6 @@ def epsG(arms, epsilon, T):
     for i in range(T):
         toss = np.random.uniform(0, 1)
         ind = 0
-
         if toss < epsilon:
             ind = np.random.choice(N)
         else:
@@ -59,8 +57,8 @@ def epsG(arms, epsilon, T):
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    ind_max = np.argmax([arm.p[1] for arm in arms])
-    regret = arms[ind_max].p[1] * T - reward
+    p_star = np.max([arm.p[1] for arm in arms])
+    regret = p_star * T - reward
     return regret, 0
 
 
@@ -75,21 +73,21 @@ def UCB(arms, scale, T):
     for i in range(N):
         arm_pull = arms[i].pull()
         reward += arm_pull
-        arm_successes[i] = arm_pull
+        arm_successes[i] += arm_pull
         arm_pulls[i] += 1
         empirical_means[i] = arm_successes[i] / arm_pulls[i]
 
     for i in range(N, T):
-        ind = np.argmax([(p + np.sqrt(scale * np.log(i)/n))
+        ind = np.argmax([(p + np.sqrt(scale * (np.log(i)/n)))
                         for p, n in zip(empirical_means, arm_pulls)])
         arm_pull = arms[ind].pull()
         reward += arm_pull
-        arm_successes[ind] = arm_pull
+        arm_successes[ind] += arm_pull
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    ind_max = np.argmax([arm.p[1] for arm in arms])
-    regret = arms[ind_max].p[1] * T - reward
+    p_star = np.max([arm.p[1] for arm in arms])
+    regret = p_star * T - reward
     return regret, 0
 
 
@@ -127,7 +125,7 @@ def kl_UCB(arms, T):
     for i in range(N):
         arm_pull = arms[i].pull()
         reward += arm_pull
-        arm_successes[i] = arm_pull
+        arm_successes[i] += arm_pull
         arm_pulls[i] += 1
         empirical_means[i] = arm_successes[i] / arm_pulls[i]
 
@@ -136,12 +134,12 @@ def kl_UCB(arms, T):
                         for p, n in zip(empirical_means, arm_pulls)])
         arm_pull = arms[ind].pull()
         reward += arm_pull
-        arm_successes[ind] = arm_pull
+        arm_successes[ind] += arm_pull
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    ind_max = np.argmax([arm.p[1] for arm in arms])
-    regret = arms[ind_max].p[1] * T - reward
+    p_star = np.max([max(arm.p) for arm in arms])
+    regret = p_star * T - reward
     return regret, 0
 
 
@@ -157,12 +155,12 @@ def thompsonSampling(arms, T):
                         for s, t in zip(arm_successes, arm_pulls)])
         arm_pull = arms[ind].pull()
         reward += arm_pull
-        arm_successes[ind] = arm_pull
+        arm_successes[ind] += arm_pull
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    ind_max = np.argmax([arm.p[1] for arm in arms])
-    regret = arms[ind_max].p[1] * T - reward
+    p_star = np.max([arm.p[1] for arm in arms])
+    regret = p_star * T - reward
     return regret, 0
 
 
@@ -186,7 +184,7 @@ def algoTask3(arms, T):
             support, arm_successes[i])) / arm_pulls[i]
 
     for i in range(N, T):
-        ind = np.argmax([(p + np.sqrt(0.255 * np.log(i)/n))
+        ind = np.argmax([(p + np.sqrt(0.235 * np.log(i)/n))
                         for p, n in zip(expirical_expectations, arm_pulls)])
         pull_reward = arms[ind].pull()
         reward += pull_reward
@@ -198,8 +196,9 @@ def algoTask3(arms, T):
         expirical_expectations[ind] = sum(np.multiply(
             support, arm_successes[ind])) / arm_pulls[ind]
 
-    regret = np.max([sum([r*p for r, p in zip(arm.outcomes, arm.p)])
-                    for arm in arms]) * T - reward
+    exp_star = np.max([sum([r*p for r, p in zip(arm.outcomes, arm.p)])
+                       for arm in arms])
+    regret = exp_star * T - reward
     return regret, 0
 
 
@@ -212,7 +211,7 @@ class BernoulliBandit:
     # arms = []
     def __init__(self, instance):
         self.instance = instance
-        if instance[27] in ['1', '2']:
+        if 'task1' in instance or 'task2' in instance:
             with open(instance) as f:
                 self.arms = [arm([0, 1], [1-float(i), float(i)])
                              for i in f.read().splitlines()]
