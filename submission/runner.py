@@ -16,7 +16,7 @@ for i in range(1, 4):
                 regret, high = banditSample.runAlgo(
                     algo, seed, 0.02, 2, 0, horizon)
 
-# Task 2:
+# # Task 2:
 for i in range(1, 6):
     instance = "../instances/instances-task2/i-{}.txt".format(i)
     banditSample = BernoulliBandit(instance)
@@ -25,7 +25,7 @@ for i in range(1, 6):
             regret, high = banditSample.runAlgo(
                 'ucb-t2', seed, 0.02, 0.02*scale, 0, 10000)
 
-# Task 3:
+# # Task 3:
 for i in range(1, 3):
     instance = "../instances/instances-task3/i-{}.txt".format(i)
     banditSample = BernoulliBandit(instance)
@@ -37,6 +37,7 @@ for i in range(1, 3):
 # Task 4:
 for i in range(1, 3):
     instance = "../instances/instances-task4/i-{}.txt".format(i)
+    banditSample = BernoulliBandit(instance)
     for threshold in [0.2, 0.6]:
         for horizon in horizons:
             for seed in range(50):

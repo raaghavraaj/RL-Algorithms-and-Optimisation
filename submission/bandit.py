@@ -139,34 +139,31 @@ def kl_UCB(arms, T):
         arm_pulls[ind] += 1
         empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
 
-    p_star = np.max([max(arm.p) for arm in arms])
-    regret = p_star * T - reward
-    return regret, 0
-
-
-def thompsonSampling(arms, T):
-    N = len(arms)
-    arm_successes = np.zeros(N)
-    arm_pulls = np.zeros(N)
-    empirical_means = np.zeros(N)
-    reward = 0
-
-    for i in range(T):
-        ind = np.argmax([np.random.beta(s+1, t-s+1)
-                        for s, t in zip(arm_successes, arm_pulls)])
-        arm_pull = arms[ind].pull()
-        reward += arm_pull
-        arm_successes[ind] += arm_pull
-        arm_pulls[ind] += 1
-        empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
-
     p_star = np.max([arm.p[1] for arm in arms])
     regret = p_star * T - reward
     return regret, 0
 
 
-def algoTask4(arms, threshold, T):
-    pass
+def thompsonSampling(arms, threshold, T):
+    N = len(arms)
+    arm_successes = np.zeros(N)
+    arm_pulls = np.zeros(N)
+    empirical_means = np.zeros(N)
+    highs = 0
+    for i in range(T):
+        ind = np.argmax([np.random.beta(s+1, t-s+1)
+                        for s, t in zip(arm_successes, arm_pulls)])
+        arm_pull = arms[ind].pull()
+        arm_pulls[ind] += 1
+        if arm_pull > threshold:
+            arm_successes[ind] += 1
+            highs += 1
+        empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
+
+    exp_star = np.max([sum([p if r > threshold else 0 for r, p in zip(arm.outcomes, arm.p)])
+                       for arm in arms])
+    regret = exp_star * T - highs
+    return regret, highs
 
 
 # class of bandit, with several methods
@@ -199,13 +196,14 @@ class BernoulliBandit:
             reg, highs = kl_UCB(self.arms, T)
 
         elif algorithm == 'thompson-sampling-t1':
-            reg, highs = thompsonSampling(self.arms, T)
+            reg, highs = thompsonSampling(self.arms, 0, T)
+            highs = 0
 
         elif algorithm == 'alg-t3':
             reg, highs = UCB(self.arms, 0.225, T)
 
         elif algorithm == 'alg-t4':
-            reg, highs = algoTask4(self.arms, threshold, T)
+            reg, highs = thompsonSampling(self.arms, threshold, T)
 
         print(self.instance, algorithm, seed, eps,
               scale, threshold, T, reg, highs, sep=', ', flush=True)

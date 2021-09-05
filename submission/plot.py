@@ -23,7 +23,7 @@ def parse(line):
     "seed"        : int(args[2]),
     "epsilon"     : float(args[3]),
     "scale"       : float(args[4]),
-    "threshold"   : int(args[5]),
+    "threshold"   : float(args[5]),
     "horizon"     : int(args[6]),
     "regret"      : float(args[7]),
     "highs"       : int(args[8])
@@ -134,5 +134,43 @@ if task == "3":
     plt.ylabel('Avg Regret')
     plt.xscale("log")
     plt.legend()
+
+
+if task == "4":
+  # instance -> threshold -> horizon -> seed
+  plotobj = defaultdict(
+    lambda : defaultdict(
+      lambda : defaultdict(
+        lambda : defaultdict(
+          lambda : 0
+        )
+      )
+    )
+  )
+
+  count   = 0
+
+  with open(infile, 'r') as f:
+    for line in f:
+      out = parse(line)
+      ins = out["instance"].split("/")[-1].split("-")[1][0]
+      th  = out["threshold"]
+      hz  = out["horizon"]
+      rs  = out["seed"]
+      plotobj[ins][th][hz][rs] += out["regret"]
+  
+  for ins, insobj in plotobj.items():
+    for th, hzobj in insobj.items():
+      count       += 1
+      figure       = plt.figure(count)
+
+      hz     = list(hzobj.keys())
+      regret = list(map(lambda obj: sum(obj.values()) / len(obj), hzobj.values()))
+
+      plt.plot(hz, regret, marker='o')
+      plt.title(f'Task {task}, Instance {ins}, Threshold {th}')
+      plt.xlabel('Horizon')
+      plt.ylabel('Avg HIGHS Regret')
+      plt.xscale("log")
 
 plt.show()
