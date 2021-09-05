@@ -64,7 +64,7 @@ def epsG(arms, epsilon, T):
 
 def UCB(arms, scale, T):
     N = len(arms)
-    arm_successes = np.zeros(N)
+    arm_rewards = np.zeros(N)
     arm_pulls = np.zeros(N)
     empirical_means = np.zeros(N)
     reward = 0
@@ -73,21 +73,22 @@ def UCB(arms, scale, T):
     for i in range(N):
         arm_pull = arms[i].pull()
         reward += arm_pull
-        arm_successes[i] += arm_pull
+        arm_rewards[i] += arm_pull
         arm_pulls[i] += 1
-        empirical_means[i] = arm_successes[i] / arm_pulls[i]
+        empirical_means[i] = arm_rewards[i] / arm_pulls[i]
 
     for i in range(N, T):
         ind = np.argmax([(p + np.sqrt(scale * (np.log(i)/n)))
                         for p, n in zip(empirical_means, arm_pulls)])
         arm_pull = arms[ind].pull()
         reward += arm_pull
-        arm_successes[ind] += arm_pull
+        arm_rewards[ind] += arm_pull
         arm_pulls[ind] += 1
-        empirical_means[ind] = arm_successes[ind] / arm_pulls[ind]
+        empirical_means[ind] = arm_rewards[ind] / arm_pulls[ind]
 
-    p_star = np.max([arm.p[1] for arm in arms])
-    regret = p_star * T - reward
+    exp_star = np.max([sum([r*p for r, p in zip(arm.outcomes, arm.p)])
+                       for arm in arms])
+    regret = exp_star * T - reward
     return regret, 0
 
 
@@ -164,44 +165,6 @@ def thompsonSampling(arms, T):
     return regret, 0
 
 
-def algoTask3(arms, T):
-    support = arms[0].outcomes
-    N = len(arms)
-    arm_pulls = np.zeros(N)
-    arm_successes = np.zeros((N, len(support)))
-    expirical_expectations = np.zeros(N)
-    reward = 0
-
-    for i in range(N):
-        pull_reward = arms[i].pull()
-        reward += pull_reward
-        arm_pulls[i] += 1
-        for j in range(len(support)):
-            if support[j] == pull_reward:
-                arm_successes[i][j] += 1
-                break
-        expirical_expectations[i] = sum(np.multiply(
-            support, arm_successes[i])) / arm_pulls[i]
-
-    for i in range(N, T):
-        ind = np.argmax([(p + np.sqrt(0.235 * np.log(i)/n))
-                        for p, n in zip(expirical_expectations, arm_pulls)])
-        pull_reward = arms[ind].pull()
-        reward += pull_reward
-        arm_pulls[ind] += 1
-        for j in range(len(support)):
-            if support[j] == pull_reward:
-                arm_successes[ind][j] += 1
-                break
-        expirical_expectations[ind] = sum(np.multiply(
-            support, arm_successes[ind])) / arm_pulls[ind]
-
-    exp_star = np.max([sum([r*p for r, p in zip(arm.outcomes, arm.p)])
-                       for arm in arms])
-    regret = exp_star * T - reward
-    return regret, 0
-
-
 def algoTask4(arms, threshold, T):
     pass
 
@@ -239,7 +202,7 @@ class BernoulliBandit:
             reg, highs = thompsonSampling(self.arms, T)
 
         elif algorithm == 'alg-t3':
-            reg, highs = algoTask3(self.arms, T)
+            reg, highs = UCB(self.arms, 0.225, T)
 
         elif algorithm == 'alg-t4':
             reg, highs = algoTask4(self.arms, threshold, T)
