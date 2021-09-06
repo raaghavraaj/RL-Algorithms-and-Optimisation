@@ -4,17 +4,20 @@ import matplotlib.pyplot as plt
 
 # adding command line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("--instance", help="path of the instance file")
-parser.add_argument("--algorithm", help="for one of the 7 algorithms")
-parser.add_argument("--randomSeed", help="non-negative integer")
-parser.add_argument(
-    "--epsilon", help="a real number in [0, 1] for epsilon-greedy methods")
-parser.add_argument(
-    "--scale", help="a positive real number; relevant for Task 2")
-parser.add_argument(
-    "--threshold", help="a number in [0, 1]; relevant for Task 4")
-parser.add_argument(
-    "--horizon", help="a non-negative integer denoting the number of trials/attempts")
+parser.add_argument("--instance", required=True,
+                    help="path of the instance file")
+parser.add_argument("--algorithm", required=True,
+                    help="for one of the 7 algorithms")
+parser.add_argument("--randomSeed", type=int, default=0,
+                    help="non-negative integer")
+parser.add_argument("--epsilon", type=float, default=0.02,
+                    help="a real number in [0, 1] for epsilon-greedy methods")
+parser.add_argument("--scale", type=float, default=2,
+                    help="a positive real number; relevant for Task 2")
+parser.add_argument("--threshold", type=float, default=0,
+                    help="a number in [0, 1]; relevant for Task 4")
+parser.add_argument("--horizon", required=True,
+                    help="a non-negative integer denoting the number of trials/attempts")
 
 
 # Class arm
