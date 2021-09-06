@@ -1,2 +1,2 @@
-Task 2:
+Task 2: To understand the variation of regret with the changing value of scale
     https://towardsdatascience.com/the-upper-confidence-bound-ucb-bandit-algorithm-c05c2bf4c13f
