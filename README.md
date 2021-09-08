@@ -29,7 +29,7 @@ For example
 ```
 Output
 ```
-<< ../instances/instances-task1/i-2.txt, ucb-t1, 499, 0.02, 2.0, 0.0, 27, 6.5, 0
+../instances/instances-task1/i-2.txt, ucb-t1, 499, 0.02, 2.0, 0.0, 27, 6.5, 0
 ```
 The ```submissions``` directory contains a script ```runner.py``` to run all the tasks and prints data. Run the script and pipe the output to a file (there will be 9000+ lines printed). The complete task would take almost 4-6 hours to run.
 The bottom line is an output example.
