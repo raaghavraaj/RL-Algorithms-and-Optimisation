@@ -21,13 +21,15 @@ and prints the 7 arguments along with the REGRET and HIGHS calculated in a comma
 
 The script can be run using the following command using the appropriate and customised parameters for the conditional arguments:
 ```
-~RL-Algorithms-and-Optimisation $ python3 bandit.py --instance {path} --algorithm {algo} --randomSeed {seed} --epsilon {eps} --scale {c} --threshold {th} --horizon {hz}
+~RL-Algorithms-and-Optimisation/submission $ python3 bandit.py --instance {path} --algorithm {algo} --randomSeed {seed} --epsilon {eps} --scale {c} --threshold {th} --horizon {hz}
 ```
 For example
 ```
->> ~RL-Algorithms-and-Optimisation $ python3 bandit.py --instance ../instances/instances-task1/i-2.txt --algorithm ucb-t1 --randomSeed 499 --epsilon 0.02 --scale 2 --threshold 0 --horizon 27
-
-<< ../instances/instances-task1/i-2.txt, ucb-t1, 499, 0.02, 2.0, 0.0, 27, 6.5, 0
+~RL-Algorithms-and-Optimisation/submission $ python3 bandit.py --instance ../instances/instances-task1/i-2.txt --algorithm ucb-t1 --randomSeed 499 --epsilon 0.02 --scale 2 --threshold 0 --horizon 27
+```
+Output
+```
+../instances/instances-task1/i-2.txt, ucb-t1, 499, 0.02, 2.0, 0.0, 27, 6.5, 0
 ```
 The ```submissions``` directory contains a script ```runner.py``` to run all the tasks and prints data. Run the script and pipe the output to a file (there will be 9000+ lines printed). The complete task would take almost 4-6 hours to run.
 The bottom line is an output example.
