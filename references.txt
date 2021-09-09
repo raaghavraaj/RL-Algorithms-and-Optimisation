@@ -1,0 +1,10 @@
+Task 2: 
+    UCB definition and 
+    To understand the variation of regret with the changing value of scale
+https://towardsdatascience.com/the-upper-confidence-bound-ucb-bandit-algorithm-c05c2bf4c13f
+
+Numpy Documentation:
+https://numpy.org
+
+Curve Plotting:
+https://www.geeksforgeeks.org/graph-plotting-in-python-set-1/
