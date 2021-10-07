@@ -5,6 +5,9 @@ The repository contains the beginner Reinforcement Learning algorithms dealing w
 * KL-UCB Algorithm
 * Thompson Sampling Algorithm
 
+# Problem Statement
+Please head over to the [assignment webpage](https://www.cse.iitb.ac.in/~shivaram/teaching/cs747-a2021/pa-1/programming-assignment-1.html) on the instructor's website.
+
 # Running and executing the algorithms
 All of the classes, algorithms and useful functions are implemented in the file ```submission/bandit.py```
 
